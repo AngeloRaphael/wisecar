@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="shortcut icon" href="./images/logo.png" type="image/x-icon">
+    <title>Detalhes do Veículo - WiseCar</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+    <header>
+        <div class="menu-esquerda">
+            <div class="logo"><img src="images/logo.png" alt="logo"></span>
+            </div>
+
+            <nav class="links">
+                <a href="index.html">Início</a>
+                <a href="#">Buscar</a>
+                <a href="anuncios.html">Anúncios</a>
+                <a href="vender.html">Vender</a>
+                <a href="chat.html">
+                    <button class="btn-contato">Entre em contato</button>
+                </a>
+            </nav>
+        </div>
+        <div class="menu-direita">
+            <a href="about.html">
+                <button class="btn-sobrenos">Sobre nós</button>
+            </a>
+        </div>
+
+    </header>
+
+    <main class="container detalhes-page">
+        <div class="detalhes-container">
+            <!-- Galeria de Fotos -->
+            <div class="galeria-section">
+                <div class="foto-principal">
+                    <img id="fotoPrincipal" src="" alt="Foto principal do veículo">
+                </div>
+                <div class="miniaturas" id="miniaturas">
+                    <!-- As miniaturas serão preenchidas via JavaScript -->
+                </div>
+            </div>
+
+            <!-- Informações do Veículo -->
+            <div class="info-section">
+                <div class="info-header">
+                    <h1 id="tituloVeiculo">Carregando...</h1>
+                    <div class="preco" id="precoVeiculo">R$ 0,00</div>
+                    <div class="localizacao" id="localizacaoVeiculo">Localização não informada</div>
+                </div>
+
+                <div class="info-detalhes">
+                    <h3>Detalhes do veículo</h3>
+                    <div class="detalhes-grid" id="detalhesVeiculo">
+                        <!-- Detalhes serão preenchidos via JavaScript -->
+                    </div>
+                </div>
+
+                <div class="descricao">
+                    <h3>Descrição</h3>
+                    <p id="descricaoVeiculo">Carregando descrição...</p>
+                </div>
+
+                <!-- Botão Comprar -->
+                <div class="compra-section">
+                    <button class="btn-comprar" id="btnComprar">
+                        <span>Comprar Agora</span>
+                    </button>
+                    <p class="info-compra">Processo seguro e garantido</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Veículos Similares -->
+        <div class="veiculos-similares">
+            <h2>Também podem te interessar</h2>
+            <div class="similar-grid" id="veiculosSimilares">
+                <!-- Veículos similares serão preenchidos via JavaScript -->
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <div></div>
+            <div></div>
+        </div>
+    </footer>
+
+    <script src="assets/js/detalhes.js"></script>
+</body>
+
+</html>

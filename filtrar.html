@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ajude-me a escolher — Filtro de carros</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <header>
+    <div class="menu-esquerda">
+      <div class="logo"><img src="images/logo.png" alt="logo"></span>
+      </div>
+
+      <nav class="links">
+        <a href="index.html">Início</a>
+        <a href="#">Buscar</a>
+        <a href="chat.html">
+        <button class="btn-contato">Entre em contato</button>
+      </a>
+      </nav>
+    </div>
+    <div class="menu-direita">
+      <a href="about.html">
+          <button class="btn-sobrenos">Sobre nós</button>
+        </a>
+    </div>
+
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div>
+        <h1>Filtre carros conforme seu perfil</h1>
+        <p class="lead">Responda algumas perguntas rápidas e nós sugerimos os anúncios que mais combinam com você! Espaço, potência, conforto e mais.</p>
+
+      </div>
+      <div class="imagen">
+        <img src="images/imagemfiltro.jpg" alt="imagem ilustrativa">
+          </g>
+        </svg>
+      </div>
+    </section>
+
+    <section id="quiz" style="margin-top:28px">
+      <div class="card">
+        <form id="filterForm" onsubmit="event.preventDefault();applyFilters()">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <div>
+              <strong>1.</strong> <span class="muted">Qual o aspecto principal que você considera ao comprar?</span>
+            </div>
+          </div>
+
+          <div class="row">
+            <div style="flex:1 1 220px">
+              <label>Preferência</label>
+              <div class="chips" role="list">
+                <button type="button" class="chip" data-key="economico">Econômico</button>
+                <button type="button" class="chip" data-key="espaco">Espaço de bagageiro</button>
+                <button type="button" class="chip" data-key="potencia">Potência</button>
+                <button type="button" class="chip" data-key="conforto">Conforto</button>
+                <button type="button" class="chip" data-key="tecnologia">Tecnológico</button>
+              </div>
+            </div>
+
+            <div style="flex:1 1 160px">
+              <label>Nº de passageiros</label>
+              <select id="passengers">
+                <option value="2">2</option>
+                <option value="4" selected>4</option>
+                <option value="5">5</option>
+                <option value="7">7+</option>
+              </select>
+            </div>
+
+            <div style="flex:1 1 160px">
+              <label>Uso principal</label>
+              <select id="usage">
+                <option value="urbano">Urbano</option>
+                <option value="estrada">Estrada</option>
+                <option value="misto" selected>Misto</option>
+                <option value="trabalho">Trabalho/Transporte</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="margin-top:8px">
+            <label>2. Preço (faixa)</label>
+            <div class="row">
+              <input type="number" id="minPrice" placeholder="Preço mínimo (R$)" />
+              <input type="number" id="maxPrice" placeholder="Preço máximo (R$)" />
+            </div>
+          </div>
+
+          <div style="margin-top:12px">
+            <label>3. Qual combustível prefere?</label>
+            <div class="chips">
+              <button type="button" class="chip" data-key="flex">Flex</button>
+              <button type="button" class="chip" data-key="etanol">Etanol</button>
+              <button type="button" class="chip" data-key="gasolina">Gasolina</button>
+              <button type="button" class="chip" data-key="hibrido">Híbrido</button>
+              <button type="button" class="chip" data-key="eletrico">Elétrico</button>
+              <button type="button" class="chip" data-key="diesel">Diesel</button>
+            </div>
+          </div>
+
+          <div style="margin-top:12px">
+            <label>4. Transmissão</label>
+            <div class="chips">
+              <button type="button" class="chip" data-key="manual">Manual</button>
+              <button type="button" class="chip" data-key="automatico">Automático</button>
+              <button type="button" class="chip" data-key="semi automatico">semi automático</button>
+            </div>
+          </div>
+
+          <div style="margin-top:12px">
+            <label>5. Necessita de itens de tecnologia? (ex: sensores, multimídia)</label>
+            <div class="chips">
+              <button type="button" class="chip" data-key="tech_yes">Sim</button>
+              <button type="button" class="chip" data-key="tech_no">Não</button>
+            </div>
+          </div>
+
+          <div style="margin-top:12px">
+            <label>6. Acessibilidade / facilidade de entrada</label>
+            <div class="chips">
+              <button type="button" class="chip" data-key="easy_in">Sim, preciso</button>
+              <button type="button" class="chip" data-key="no_need">Não</button>
+            </div>
+          </div>
+
+          <div class="actions">
+            
+              <div class="progress" aria-hidden><i id="prog"></i></div>
+            </div>
+            <div style="display:flex;gap:12px;align-items:center"></div>
+              <button type="button" class="btn secondary" onclick="resetForm()">Limpar</button>
+              <button type="submit" class="btn-buscar">Buscar</button>
+            </div>
+          </div>
+
+          <div id="result" class="result" style="display:none">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <strong>Melhores sugestões</strong>
+                <div class="muted">Com base nas suas respostas, veja algumas categorias recomendadas</div>
+              </div>
+              <div id="confidence" class="muted">Confiança: 0%</div>
+            </div>
+
+            <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:12px" id="suggestions"></div>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <footer>
+      <div class="container" style="display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap">
+        <div>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    const chips = Array.from(document.querySelectorAll('.chip'));
+    const stepEl = document.getElementById('step');
+    const progEl = document.getElementById('prog');
+
+    chips.forEach(c => c.addEventListener('click', e => {
+      const btn = e.currentTarget;
+      btn.classList.toggle('active');
+      updateProgress();
+    }));
+
+    function updateProgress(){
+      const active = chips.filter(c=>c.classList.contains('active')).length;
+      const percent = Math.min(100, Math.round((active/8)*100));
+      progEl.style.width = percent + '%';
+      const step = Math.min(6, 1 + Math.floor(active/1.5));
+      stepEl.textContent = step;
+    }
+
+    function resetForm(){
+      document.getElementById('filterForm').reset();
+      chips.forEach(c=>c.classList.remove('active'));
+      document.getElementById('result').style.display='none';
+      updateProgress();
+    }
+
+    function applyFilters(){
+      const activeKeys = chips.filter(c=>c.classList.contains('active')).map(x=>x.dataset.key);
+      const passengers = document.getElementById('passengers').value;
+      const minPrice = Number(document.getElementById('minPrice').value || 0);
+      const maxPrice = Number(document.getElementById('maxPrice').value || 0);
+      const suggestions = [];
+      let confidence = 45;
+
+      if(activeKeys.includes('economico') || activeKeys.includes('flex') || activeKeys.includes('hibrido') || activeKeys.includes('eletrico')){
+        suggestions.push({title:'Hatch Econômico / Híbrido', desc:'Compacto, baixo consumo — ideal para cidade.'});
+        confidence += 12;
+      }
+      if(activeKeys.includes('espaco') || passengers>4){
+        suggestions.push({title:'SUV compacto / Station', desc:'Maior espaço interno e bagageiro.'});
+        confidence += 10;
+      }
+      if(activeKeys.includes('potencia')){
+        suggestions.push({title:'Sedã esportivo / Hatch potente', desc:'Maior desempenho e aceleração.'});
+        confidence += 8;
+      }
+      if(activeKeys.includes('conforto') || activeKeys.includes('tech_yes')){
+        suggestions.push({title:'Sedã médio / SUV médio', desc:'Mais itens de conforto e tecnologias de assistência.'});
+        confidence += 10;
+      }
+      if(activeKeys.includes('acessibilidade') || activeKeys.includes('easy_in')){
+        suggestions.push({title:'Veículo com fácil acesso', desc:'Altura e portas largas, ideal para mobilidade reduzida.'});
+        confidence += 6;
+      }
+      if(maxPrice && maxPrice<50000) { suggestions.push({title:'Opções seminovas / populares', desc:'Modelos mais acessíveis e econômicos.'}); confidence += 5 }
+      if(minPrice && minPrice>150000) { suggestions.unshift({title:'Premium / 0km', desc:'Modelos novos e com mais equipamentos.'}); confidence += 8 }
+
+      const dedup = [];
+      const seen = new Set();
+      for(const s of suggestions){ if(!seen.has(s.title)){ dedup.push(s); seen.add(s.title); } }
+      renderResults(dedup.slice(0,4), Math.min(98, confidence));
+    }
+
+    function renderResults(items, confidence){
+      const box = document.getElementById('result');
+      const list = document.getElementById('suggestions');
+      const conf = document.getElementById('confidence');
+      list.innerHTML='';
+      conf.textContent = 'Confiança: ' + confidence + '%';
+      if(items.length===0){ list.innerHTML = '<div class="muted">Nenhuma sugestão automática. Tente selecionar mais preferências acima.</div>' }
+      for(const it of items){
+        const el = document.createElement('div'); el.className='suggestion';
+        el.innerHTML = `
+          <div style="display:flex;gap:12px;align-items:center">
+            <div class="car-thumb" aria-hidden></div>
+            <div>
+              <div style="font-weight:800">${it.title}</div>
+              <div class="muted" style="font-size:13px">${it.desc}</div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;justify-content:center">
+            <button class="btn secondary" style="border-radius:10px">Ver anúncios</button>
+            <div style="font-size:12px;color:#999;margin-top:6px">Ver filtros aplicados</div>
+          </div>
+        `;
+        list.appendChild(el);
+      }
+      box.style.display = 'block';
+      box.scrollIntoView({behavior:'smooth', block:'center'});
+    }
+
+    updateProgress();
+  </script>
+</body>
+</html>

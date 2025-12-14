@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="shortcut icon" href="./images/logo.png" type="image/x-icon">
+  <title>Anúncios - WiseCar</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+  <header>
+    <div class="menu-esquerda">
+      <div class="logo"><img src="images/logo.png" alt="logo"></span>
+      </div>
+
+      <nav class="links">
+        <a href="index.html">Início</a>
+        <a href="#">Buscar</a>
+        <a href="anuncios.html">Anúncios</a>
+        <a href="vender.html">Vender</a>
+        <a href="chat.html">
+          <button class="btn-contato">Entre em contato</button>
+        </a>
+      </nav>
+    </div>
+    <div class="menu-direita">
+      <a href="about.html">
+        <button class="btn-sobrenos">Sobre nós</button>
+      </a>
+    </div>
+
+  </header>
+
+  <main class="container anuncios-area">
+    <h2 class="page-title">Anúncios publicados</h2>
+    <div id="anunciosList" class="anuncios-grid">
+    </div>
+
+    <div id="noAds" class="no-ads" style="display:none">
+      <p>Nenhum anúncio encontrado. <a href="vender.html">Crie um agora</a>.</p>
+    </div>
+
+    <div id="loading" style="text-align: center; padding: 20px;">
+      <p>Carregando anúncios...</p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div></div>
+      <div></div>
+    </div>
+  </footer>
+
+  <script>
+    const API_URL = 'http://localhost:3001';
+
+    async function carregarAnuncios() {
+      const listEl = document.getElementById('anunciosList');
+      const noAdsEl = document.getElementById('noAds');
+      const loadingEl = document.getElementById('loading');
+
+      try {
+        loadingEl.style.display = 'block';
+        listEl.style.display = 'none';
+        noAdsEl.style.display = 'none';
+
+        const response = await fetch(`${API_URL}/anuncios`);
+
+        if (!response.ok) {
+          throw new Error('Erro ao carregar anúncios');
+        }
+
+        const ads = await response.json();
+
+        loadingEl.style.display = 'none';
+
+        if (!ads.length) {
+          noAdsEl.style.display = 'block';
+          listEl.style.display = 'none';
+        } else {
+          noAdsEl.style.display = 'none';
+          listEl.style.display = 'grid';
+          listEl.innerHTML = '';
+
+          ads.forEach(ad => {
+            const card = document.createElement('article');
+            card.className = 'ad-card';
+            card.dataset.id = ad.id;
+
+            // TORNE O CARD CLICÁVEL PARA REDIRECIONAR PARA DETALHES
+            card.style.cursor = 'pointer';
+            card.onclick = () => {
+              window.location.href = `detalhes.html?id=${ad.id}`;
+            };
+
+            const imgWrap = document.createElement('div');
+            imgWrap.className = 'ad-images';
+            if (ad.images && ad.images.length) {
+              const mainImg = document.createElement('img');
+              mainImg.src = ad.images[0];
+              mainImg.alt = `${ad.marca} ${ad.modelo}`;
+              imgWrap.appendChild(mainImg);
+
+              const thumbs = document.createElement('div');
+              thumbs.className = 'thumbs';
+              ad.images.slice(0, 4).forEach(src => {
+                const t = document.createElement('img');
+                t.src = src;
+                thumbs.appendChild(t);
+              });
+              imgWrap.appendChild(thumbs);
+            } else {
+              const placeholder = document.createElement('div');
+              placeholder.className = 'no-image';
+              placeholder.textContent = 'Sem foto';
+              imgWrap.appendChild(placeholder);
+            }
+
+            const info = document.createElement('div');
+            info.className = 'ad-info';
+
+            const title = document.createElement('h3');
+            title.textContent = `${ad.marca || '-'} ${ad.modelo || '-'}`;
+
+            const preco = document.createElement('div');
+            preco.className = 'preco';
+            preco.textContent = `R$ ${parseFloat(ad.preco || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+            preco.style.fontSize = '1.2em';
+            preco.style.fontWeight = 'bold';
+            preco.style.color = '#F57C00';
+            preco.style.marginBottom = '8px';
+
+            const meta = document.createElement('p');
+            meta.className = 'meta';
+            meta.innerHTML = `Ano: ${ad.ano || '-'} • Km: ${ad.quilometragem || '-'} • Cor: ${ad.cor || '-'}`;
+
+            const desc = document.createElement('p');
+            desc.className = 'desc';
+            desc.textContent = ad.descricao || '';
+
+            // Botões de ação
+            const actions = document.createElement('div');
+            actions.className = 'ad-actions';
+            actions.style.marginTop = '15px';
+            actions.style.display = 'flex';
+            actions.style.gap = '10px';
+            actions.style.justifyContent = 'flex-end';
+
+            const editBtn = document.createElement('button');
+            editBtn.textContent = 'Editar';
+            editBtn.className = 'btn-editar';
+            editBtn.onclick = (e) => {
+              e.stopPropagation(); // Impede que o clique no botão redirecione para detalhes
+              editarAnuncio(ad.id);
+            };
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = 'Remover';
+            deleteBtn.className = 'btn-remover';
+            deleteBtn.onclick = (e) => {
+              e.stopPropagation(); // Impede que o clique no botão redirecione para detalhes
+              removerAnuncio(ad.id);
+            };
+
+            actions.appendChild(editBtn);
+            actions.appendChild(deleteBtn);
+
+            info.appendChild(title);
+            info.appendChild(preco);
+            info.appendChild(meta);
+            info.appendChild(desc);
+            info.appendChild(actions);
+
+            card.appendChild(imgWrap);
+            card.appendChild(info);
+
+            listEl.appendChild(card);
+          });
+        }
+      } catch (error) {
+        console.error('Erro:', error);
+        loadingEl.style.display = 'none';
+        listEl.style.display = 'none';
+        noAdsEl.innerHTML = '<p>Erro ao carregar anúncios. Tente novamente mais tarde.</p>';
+        noAdsEl.style.display = 'block';
+      }
+    }
+
+    async function removerAnuncio(id) {
+      if (!confirm('Tem certeza que deseja remover este anúncio?')) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_URL}/anuncios/${id}`, {
+          method: 'DELETE'
+        });
+
+        if (!response.ok) {
+          throw new Error('Erro ao remover anúncio');
+        }
+
+        alert('Anúncio removido com sucesso!');
+        carregarAnuncios(); // Recarregar a lista
+      } catch (error) {
+        console.error('Erro:', error);
+        alert('Erro ao remover anúncio. Tente novamente.');
+      }
+    }
+
+    function editarAnuncio(id) {
+      window.location.href = `vender.html?editar=${id}`;
+    }
+
+    // Carregar anúncios quando a página carregar
+    document.addEventListener('DOMContentLoaded', carregarAnuncios);
+  </script>
+</body>
+
+</html>
